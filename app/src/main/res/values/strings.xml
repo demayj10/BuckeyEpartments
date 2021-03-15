@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">BuckeyEpartments</string>
     <string name="view_db">View Database</string>
+
+    <!-- Used for extracting data from firebase return JSON -->
+    <string name="data_rent_key">costOfRent</string>
+    <string name="data_bed_bath_key">bedBath</string>
+    <string name="data_bed_count_key">roomCount</string>
+    <string name="data_bathroom_count_key">bathroomCount</string>
+    <string name="data_address_key">address</string>
+    <string name="data_street_address_key">streetAddress</string>
+    <string name="data_city_key">city</string>
+    <string name="data_zip_code_key">zipCode</string>
+
+    <string name="state_initial">OH</string>
 </resources>
