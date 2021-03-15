@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BuckeyEpartments</string>
+    <string name="view_db">View Database</string>
 </resources>
