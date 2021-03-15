@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "553462490550",
+    "firebase_url": "https://buckeyepartments-default-rtdb.firebaseio.com",
+    "project_id": "buckeyepartments",
+    "storage_bucket": "buckeyepartments.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553462490550:android:ad8bcf55e3c104ee24cd17",
+        "android_client_info": {
+          "package_name": "com.android.ohiostate.buckeyepartments"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553462490550-2qqhqaros1r0lhqfs2d33doamtplki8d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKfbBD-RE_XkWKmERY-BsYmZ4EX9JhGHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553462490550-2qqhqaros1r0lhqfs2d33doamtplki8d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
