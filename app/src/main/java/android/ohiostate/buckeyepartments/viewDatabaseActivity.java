@@ -32,10 +32,6 @@ public class viewDatabaseActivity extends AppCompatActivity {
         ref.addValueEventListener(buildList);
     }
 
-    public void viewListing(View view) {
-
-    }
-
     private ValueEventListener buildList = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {

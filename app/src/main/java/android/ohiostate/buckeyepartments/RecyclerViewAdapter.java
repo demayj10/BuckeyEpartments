@@ -1,6 +1,7 @@
 package android.ohiostate.buckeyepartments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.rent.setText("$" + snapshot.child("" + position).child("costOfRent").getValue());
         holder.bedBath.setText(snapshot.child("" + position).child("bedBath").child("roomCount").getValue() + " Bed, " + snapshot.child("" + position).child("bedBath").child("bathroomCount").getValue() + " Bath");
         holder.address.setText(snapshot.child("" + position).child("address").child("streetAddress").getValue() + ", " + snapshot.child("" + position).child("address").child("city").getValue() + " OH, " + snapshot.child("" + position).child("address").child("zipCode").getValue());
+        holder.key = "" + position;
     }
 
     @Override
@@ -47,12 +49,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView address;
         TextView bedBath;
         TextView rent;
+        String key;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this::viewListing);
             address = itemView.findViewById(R.id.address);
             bedBath = itemView.findViewById(R.id.bed_bath);
             rent = itemView.findViewById(R.id.rent);
+        }
+
+        public void viewListing(View view) {
+            Intent intent = new Intent(mContext, viewListingActivity.class);
+            intent.putExtra("listingKey", key);
+            mContext.startActivity(intent);
         }
     }
 }
