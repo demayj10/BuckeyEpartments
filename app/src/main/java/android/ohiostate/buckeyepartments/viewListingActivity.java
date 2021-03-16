@@ -2,7 +2,6 @@ package android.ohiostate.buckeyepartments;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +13,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class viewListingActivity extends AppCompatActivity {
 
@@ -54,21 +55,25 @@ public class viewListingActivity extends AppCompatActivity {
         ref.addValueEventListener(fillValues);
     }
 
-    private ValueEventListener fillValues = new ValueEventListener() {
+    private final ValueEventListener fillValues = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
-            address.setText("" + snapshot.child("address/streetAddress").getValue());
-            city.setText("" + snapshot.child("address/city").getValue());
-            zip.setText("" + snapshot.child("address/zipCode").getValue());
+            address.setText(getDataString(snapshot, "address/streetAddress"));
+            city.setText(getDataString(snapshot, "address/city"));
+            zip.setText(getDataString(snapshot, "address/zipCode"));
 
-            bed.setText("" + snapshot.child("bedBath/roomCount").getValue());
-            bath.setText("" + snapshot.child("bedBath/bathroomCount").getValue());
+            bed.setText(getDataString(snapshot,"bedBath/roomCount"));
+            bath.setText(getDataString(snapshot, "bedBath/bathroomCount"));
 
-            email.setText("" + snapshot.child("contactInfo/email").getValue());
-            url.setText("" + snapshot.child("contactInfo/listingUrl").getValue());
-            phone.setText("" + snapshot.child("contactInfo/phoneNumber").getValue());
+            email.setText(getDataString(snapshot, "contactInfo/email"));
+            url.setText(getDataString(snapshot, "contactInfo/listingUrl"));
+            phone.setText(getDataString(snapshot, "contactInfo/phoneNumber"));
 
-            rent.setText("" + snapshot.child("costOfRent").getValue());
+            rent.setText(getDataString(snapshot, "costOfRent"));
+        }
+
+        private String getDataString(DataSnapshot data, String key) {
+            return Objects.requireNonNull(data.child(key).getValue()).toString();
         }
 
         @Override

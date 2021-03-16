@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,7 +30,7 @@ public class viewDatabaseActivity extends AppCompatActivity {
         ref.addValueEventListener(buildList);
     }
 
-    private ValueEventListener buildList = new ValueEventListener() {
+    private final ValueEventListener buildList = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             Log.d(viewDatabaseActivity.this.getClass().getSimpleName(), "DataSnapshot arrived.");
