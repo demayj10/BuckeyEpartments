@@ -33,16 +33,19 @@ public class viewDatabaseActivity extends AppCompatActivity {
     private final ValueEventListener buildList = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
-            Log.d(viewDatabaseActivity.this.getClass().getSimpleName(), "DataSnapshot arrived.");
+            Log.d(viewDatabaseActivity.this.getClass().getSimpleName(),
+                    "DataSnapshot arrived.");
             RecyclerViewAdapter adapter = new RecyclerViewAdapter(viewDatabaseActivity.this, snapshot);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(viewDatabaseActivity.this));
-            Log.d(viewDatabaseActivity.this.getClass().getSimpleName(), "RecyclerView initialized.");
+            Log.d(viewDatabaseActivity.this.getClass().getSimpleName(),
+                    "RecyclerView initialized.");
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
-            Log.w(viewDatabaseActivity.this.getClass().getSimpleName(), "Failed to read value.", error.toException());
+            Log.w(viewDatabaseActivity.this.getClass().getSimpleName(),
+                    "Failed to read value.", error.toException());
         }
     };
 }
