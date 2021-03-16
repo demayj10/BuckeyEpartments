@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
@@ -22,9 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.util.Objects;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class viewListingActivity extends AppCompatActivity {
 
@@ -39,6 +35,8 @@ public class viewListingActivity extends AppCompatActivity {
     private TextInputEditText url;
     private TextInputEditText phone;
     private TextInputEditText rent;
+
+    private final String TAG = "viewListingActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,48 +67,53 @@ public class viewListingActivity extends AppCompatActivity {
     private final ValueEventListener fillValues = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
-            address.setText(getDataString(snapshot, "address/streetAddress"));
-            city.setText(getDataString(snapshot, "address/city"));
-            zip.setText(getDataString(snapshot, "address/zipCode"));
+            Log.d(TAG, "In onDataChange");
+            try {
+                if (snapshot.getValue() != null) {
+                    address.setText(getDataString(snapshot, "address/streetAddress"));
+                    city.setText(getDataString(snapshot, "address/city"));
+                    zip.setText(getDataString(snapshot, "address/zipCode"));
 
-            bed.setText(getDataString(snapshot,"bedBath/roomCount"));
-            bath.setText(getDataString(snapshot, "bedBath/bathroomCount"));
+                    bed.setText(getDataString(snapshot,"bedBath/roomCount"));
+                    bath.setText(getDataString(snapshot, "bedBath/bathroomCount"));
 
-            email.setText(getDataString(snapshot, "contactInfo/email"));
-            url.setText(getDataString(snapshot, "contactInfo/listingUrl"));
-            phone.setText(getDataString(snapshot, "contactInfo/phoneNumber"));
+                    email.setText(getDataString(snapshot, "contactInfo/email"));
+                    url.setText(getDataString(snapshot, "contactInfo/listingUrl"));
+                    phone.setText(getDataString(snapshot, "contactInfo/phoneNumber"));
 
-            rent.setText(getDataString(snapshot, "costOfRent"));
-        }
-
-        private String getDataString(DataSnapshot data, String key) {
-            return Objects.requireNonNull(data.child(key).getValue()).toString();
+                    rent.setText(getDataString(snapshot, "costOfRent"));
+                }
+            } catch (NullPointerException e) {
+                System.out.println(e);
+            }
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
-            Log.w(viewListingActivity.this.getClass().getSimpleName(), "Failed to read value.", error.toException());
+            Log.w(viewListingActivity.this.getClass().getSimpleName(),
+                    "Failed to read value.", error.toException());
         }
     };
 
     public void updateListing(View v) {
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("address/streetAddress", address.getText().toString());
-        childUpdates.put("address/city", city.getText().toString());
-        childUpdates.put("address/zipCode", zip.getText().toString());
+        childUpdates.put("address/streetAddress", Objects.requireNonNull(address.getText()).toString());
+        childUpdates.put("address/city", Objects.requireNonNull(city.getText()).toString());
+        childUpdates.put("address/zipCode", Objects.requireNonNull(zip.getText()).toString());
 
-        childUpdates.put("bedBath/roomCount", bed.getText().toString());
-        childUpdates.put("bedBath/bathroomCount", bath.getText().toString());
+        childUpdates.put("bedBath/roomCount", Objects.requireNonNull(bed.getText()).toString());
+        childUpdates.put("bedBath/bathroomCount", Objects.requireNonNull(bath.getText()).toString());
 
-        childUpdates.put("contactInfo/email", email.getText().toString());
-        childUpdates.put("contactInfo/listingUrl", url.getText().toString());
-        childUpdates.put("contactInfo/phoneNumber", phone.getText().toString());
+        childUpdates.put("contactInfo/email", Objects.requireNonNull(email.getText()).toString());
+        childUpdates.put("contactInfo/listingUrl", Objects.requireNonNull(url.getText()).toString());
+        childUpdates.put("contactInfo/phoneNumber", Objects.requireNonNull(phone.getText()).toString());
 
-        childUpdates.put("costOfRent", rent.getText().toString());
+        childUpdates.put("costOfRent", Objects.requireNonNull(rent.getText()).toString());
         ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast success = Toast.makeText(getApplicationContext(), "Successfully updated!", Toast.LENGTH_SHORT);
+                Toast success = Toast.makeText(getApplicationContext(),
+                        "Successfully updated!", Toast.LENGTH_SHORT);
                 success.show();
             }
         });
@@ -120,11 +123,16 @@ public class viewListingActivity extends AppCompatActivity {
         ref.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast success = Toast.makeText(getApplicationContext(), "Successfully deleted!", Toast.LENGTH_SHORT);
+                Toast success = Toast.makeText(getApplicationContext(),
+                        "Successfully deleted!", Toast.LENGTH_SHORT);
                 success.show();
                 finish();
             }
         });
 
+    }
+
+    private String getDataString(DataSnapshot data, String key) {
+        return Objects.requireNonNull(data.child(key).getValue()).toString();
     }
 }

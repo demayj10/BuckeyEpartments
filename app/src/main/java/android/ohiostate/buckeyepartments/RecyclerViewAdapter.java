@@ -28,7 +28,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_database_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_database_item,
+                parent, false);
         return new ViewHolder(view);
     }
 
@@ -37,24 +38,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Log.d(RecyclerViewAdapter.this.getClass().getSimpleName(), "onBindViewHolder called.");
         DataSnapshot data = snapshot.child("" + position);
 
-        String costOfRent = Objects.requireNonNull(data.child(mContext.getString(
-                R.string.data_rent_key)).getValue()).toString();
-        holder.rent.setText(String.format("$%s", costOfRent));
+        try {
+            if (data.getValue() != null) {
+                String costOfRent = Objects.requireNonNull(data.child(mContext.getString(
+                        R.string.data_rent_key)).getValue()).toString();
+                holder.rent.setText(String.format("$%s", costOfRent));
 
-        DataSnapshot bedBathSnapshot = getDataSnapshot(data, R.string.data_bed_bath_key);
-        String bedCount = getDataStringValue(bedBathSnapshot, R.string.data_bed_count_key);
-        String bathroomCount = getDataStringValue(bedBathSnapshot, R.string.data_bathroom_count_key);
-        holder.bedBath.setText(String.format("%s Bed, %s Bath", bedCount, bathroomCount));
+                DataSnapshot bedBathSnapshot = getDataSnapshot(data, R.string.data_bed_bath_key);
+                String bedCount = getDataStringValue(bedBathSnapshot, R.string.data_bed_count_key);
+                String bathroomCount = getDataStringValue(bedBathSnapshot, R.string.data_bathroom_count_key);
+                holder.bedBath.setText(String.format("%s Bed, %s Bath", bedCount, bathroomCount));
 
-        DataSnapshot addressSnapshot = getDataSnapshot(data, R.string.data_address_key);
-        String streetAddress = getDataStringValue(addressSnapshot, R.string.data_street_address_key);
-        String city = getDataStringValue(addressSnapshot, R.string.data_city_key);
-        String zipCode = getDataStringValue(addressSnapshot, R.string.data_zip_code_key);
-        String stateInitial = mContext.getString(R.string.state_initial);
-        holder.address.setText(String.format("%s, %s %s, %s", streetAddress, city, zipCode,
-                stateInitial));
+                DataSnapshot addressSnapshot = getDataSnapshot(data, R.string.data_address_key);
+                String streetAddress = getDataStringValue(addressSnapshot, R.string.data_street_address_key);
+                String city = getDataStringValue(addressSnapshot, R.string.data_city_key);
+                String zipCode = getDataStringValue(addressSnapshot, R.string.data_zip_code_key);
+                String stateInitial = mContext.getString(R.string.state_initial);
+                holder.address.setText(String.format("%s, %s %s, %s", streetAddress, city, zipCode,
+                        stateInitial));
 
-        holder.key = "" + position;
+                holder.key = "" + position;
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
     }
 
     private DataSnapshot getDataSnapshot(DataSnapshot data, int stringResId) {
