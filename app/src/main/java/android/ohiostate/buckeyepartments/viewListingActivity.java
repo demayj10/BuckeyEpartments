@@ -6,7 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,10 +18,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import java.util.Objects;
 
 public class viewListingActivity extends AppCompatActivity {
 
+    private DatabaseReference ref;
     private String key;
     private TextInputEditText address;
     private TextInputEditText city;
@@ -51,7 +59,7 @@ public class viewListingActivity extends AppCompatActivity {
 
         // init database and listener
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference(key);
+        ref = database.getReference(key);
         ref.addValueEventListener(fillValues);
     }
 
@@ -81,4 +89,39 @@ public class viewListingActivity extends AppCompatActivity {
             Log.w(viewListingActivity.this.getClass().getSimpleName(), "Failed to read value.", error.toException());
         }
     };
+
+    public void updateListing(View v) {
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("address/streetAddress", address.getText().toString());
+        childUpdates.put("address/city", city.getText().toString());
+        childUpdates.put("address/zipCode", zip.getText().toString());
+
+        childUpdates.put("bedBath/roomCount", bed.getText().toString());
+        childUpdates.put("bedBath/bathroomCount", bath.getText().toString());
+
+        childUpdates.put("contactInfo/email", email.getText().toString());
+        childUpdates.put("contactInfo/listingUrl", url.getText().toString());
+        childUpdates.put("contactInfo/phoneNumber", phone.getText().toString());
+
+        childUpdates.put("costOfRent", rent.getText().toString());
+        ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast success = Toast.makeText(getApplicationContext(), "Successfully updated!", Toast.LENGTH_SHORT);
+                success.show();
+            }
+        });
+    }
+
+    public void deleteListing(View v) {
+        ref.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast success = Toast.makeText(getApplicationContext(), "Successfully deleted!", Toast.LENGTH_SHORT);
+                success.show();
+                finish();
+            }
+        });
+
+    }
 }
