@@ -88,7 +88,8 @@ public class viewDatabaseActivity extends AppCompatActivity {
         adapter.stopListening();
     }
 
-    public void createListing(View v) {
+    public void createListing(View v)
+    {
         Intent intent = new Intent(this, viewListingActivity.class);
         intent.putExtra("listingKey", "");
         this.startActivity(intent);

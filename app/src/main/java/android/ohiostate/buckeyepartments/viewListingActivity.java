@@ -164,6 +164,7 @@ public class viewListingActivity extends AppCompatActivity {
                 success.show();
             }
         });
+        finish();
     }
 
     public void ditchListing(View v) {

@@ -18,47 +18,40 @@ public class RecyclerViewAdapter extends FirebaseRecyclerAdapter<ListingCard, Re
 
     private Context mContext;
 
-    public RecyclerViewAdapter(@NonNull FirebaseRecyclerOptions<ListingCard> options, Context context) {
+    public RecyclerViewAdapter(@NonNull FirebaseRecyclerOptions<ListingCard> options,
+                               Context context)
+    {
         super(options);
         mContext = context;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListingCardHolder holder, int position, @NonNull ListingCard model) {
-        Log.d(RecyclerViewAdapter.this.getClass().getSimpleName(), "onBindViewHolder called for " + model.toString());
+    public void onBindViewHolder(@NonNull ListingCardHolder holder, int position,
+                                 @NonNull ListingCard model)
+    {
+        Log.d(RecyclerViewAdapter.this.getClass().getSimpleName(),
+                String.format("onBindViewHolder called for %s", model.toString()));
 
         holder.rent.setText(String.format("$%s", model.getRent()));
 
         holder.bedBath.setText(String.format("%s Bed, %s Bath", model.getBed(), model.getBath()));
 
-        holder.address.setText(String.format("%s, %s OH, %s", model.getStreetAddress(), model.getCity(), model.getZip()));
+        holder.address.setText(String.format("%s, %s OH, %s", model.getStreetAddress(),
+                model.getCity(), model.getZip()));
 
         holder.key = model.getKey();
     }
 
     @NonNull
     @Override
-    public ListingCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListingCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_database_item,
                 parent, false);
         return new ListingCardHolder(view);
     }
 
-//    private DataSnapshot getDataSnapshot(DataSnapshot data, int stringResId) {
-//        return Objects.requireNonNull(data.child(mContext.getString(stringResId)));
-//    }
-//
-//    private String getDataStringValue(DataSnapshot data, int stringResId) {
-//        return Objects.requireNonNull(data.child(mContext.getString(stringResId)).getValue())
-//                .toString();
-//    }
-
-//    @Override
-//    public int getItemCount() {
-//        return (int)snapshot.getChildrenCount();
-//    }
-
-    class ListingCardHolder extends RecyclerView.ViewHolder{
+    class ListingCardHolder extends RecyclerView.ViewHolder {
         TextView address;
         TextView bedBath;
         TextView rent;
