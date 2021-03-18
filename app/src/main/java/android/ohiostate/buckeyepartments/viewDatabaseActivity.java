@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -84,5 +86,11 @@ public class viewDatabaseActivity extends AppCompatActivity {
     {
         super.onStop();
         adapter.stopListening();
+    }
+
+    public void createListing(View v) {
+        Intent intent = new Intent(this, viewListingActivity.class);
+        intent.putExtra("listingKey", "");
+        this.startActivity(intent);
     }
 }

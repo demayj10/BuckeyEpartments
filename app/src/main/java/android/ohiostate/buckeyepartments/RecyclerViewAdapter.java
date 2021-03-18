@@ -33,7 +33,7 @@ public class RecyclerViewAdapter extends FirebaseRecyclerAdapter<ListingCard, Re
 
         holder.address.setText(String.format("%s, %s OH, %s", model.getStreetAddress(), model.getCity(), model.getZip()));
 
-        holder.key = "" + position;
+        holder.key = model.getKey();
     }
 
     @NonNull

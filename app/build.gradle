@@ -3,6 +3,8 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+android.defaultConfig.vectorDrawables.useSupportLibrary = true
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -42,3 +44,4 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.firebaseui:firebase-ui-database:7.1.1'
 }
+
