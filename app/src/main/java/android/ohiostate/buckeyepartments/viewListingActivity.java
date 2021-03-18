@@ -60,8 +60,17 @@ public class viewListingActivity extends AppCompatActivity {
 
         // init database and listener
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        ref = database.getReference(key);
-        ref.addValueEventListener(fillValues);
+        if (!key.equals("")) {
+            ref = database.getReference(key);
+            ref.addValueEventListener(fillValues);
+            findViewById(R.id.create_button).setOnClickListener(this::updateListing);
+            findViewById(R.id.delete_button).setOnClickListener(this::deleteListing);
+        } else {
+            ref = database.getReference();
+            // change the create button to instead push to db
+            findViewById(R.id.create_button).setOnClickListener(this::createListing);
+            findViewById(R.id.delete_button).setOnClickListener(this::ditchListing);
+        }
     }
 
     private final ValueEventListener fillValues = new ValueEventListener() {
@@ -129,7 +138,37 @@ public class viewListingActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
+    public void createListing(View v) {
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("address/streetAddress", Objects.requireNonNull(address.getText()).toString());
+        childUpdates.put("address/city", Objects.requireNonNull(city.getText()).toString());
+        childUpdates.put("address/zipCode", Objects.requireNonNull(zip.getText()).toString());
+
+        childUpdates.put("bedBath/roomCount", Objects.requireNonNull(bed.getText()).toString());
+        childUpdates.put("bedBath/bathroomCount", Objects.requireNonNull(bath.getText()).toString());
+
+        childUpdates.put("contactInfo/email", Objects.requireNonNull(email.getText()).toString());
+        childUpdates.put("contactInfo/listingUrl", Objects.requireNonNull(url.getText()).toString());
+        childUpdates.put("contactInfo/phoneNumber", Objects.requireNonNull(phone.getText()).toString());
+
+        childUpdates.put("costOfRent", Objects.requireNonNull(rent.getText()).toString());
+
+        String newKey = ref.push().getKey();
+        ref.child(newKey).updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast success = Toast.makeText(getApplicationContext(),
+                        "Successfully created!", Toast.LENGTH_SHORT);
+                success.show();
+            }
+        });
+        finish();
+    }
+
+    public void ditchListing(View v) {
+        finish();
     }
 
     private String getDataString(DataSnapshot data, String key) {
