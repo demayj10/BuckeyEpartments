@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,10 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.squareup.picasso.Picasso;
 
 public class RecyclerViewAdapter extends FirebaseRecyclerAdapter<ListingCard, RecyclerViewAdapter.ListingCardHolder> {
 
-    private Context mContext;
+    private final Context mContext;
 
     public RecyclerViewAdapter(@NonNull FirebaseRecyclerOptions<ListingCard> options,
                                Context context)
@@ -31,7 +33,7 @@ public class RecyclerViewAdapter extends FirebaseRecyclerAdapter<ListingCard, Re
     {
         Log.d(RecyclerViewAdapter.this.getClass().getSimpleName(),
                 String.format("onBindViewHolder called for %s", model.toString()));
-
+        Picasso.get().load(model.getPreviewImageUrl()).into(holder.previewImage);
         holder.rent.setText(String.format("$%s", model.getRent()));
 
         holder.bedBath.setText(String.format("%s Bed, %s Bath", model.getBed(), model.getBath()));
@@ -52,6 +54,7 @@ public class RecyclerViewAdapter extends FirebaseRecyclerAdapter<ListingCard, Re
     }
 
     class ListingCardHolder extends RecyclerView.ViewHolder {
+        ImageView previewImage;
         TextView address;
         TextView bedBath;
         TextView rent;
@@ -60,6 +63,7 @@ public class RecyclerViewAdapter extends FirebaseRecyclerAdapter<ListingCard, Re
         public ListingCardHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this::viewListing);
+            previewImage = itemView.findViewById(R.id.preview_image);
             address = itemView.findViewById(R.id.address);
             bedBath = itemView.findViewById(R.id.bed_bath);
             rent = itemView.findViewById(R.id.rent);
