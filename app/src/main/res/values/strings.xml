@@ -13,4 +13,10 @@
     <string name="data_zip_code_key">zipCode</string>
 
     <string name="state_initial">OH</string>
+
+    <!-- Placeholder text -->
+    <string name="image_description">This is the listing preview image</string>
+    <string name="address_placeholder">1234 Something Street</string>
+    <string name="bed_bath_placeholder">2 Bed, 1 Bath</string>
+    <string name="rent_placeholder">100000</string>
 </resources>

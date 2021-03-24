@@ -11,17 +11,14 @@ import android.util.Log;
 import android.view.View;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class viewDatabaseActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
 
     @Override
@@ -30,7 +27,7 @@ public class viewDatabaseActivity extends AppCompatActivity {
         Log.d(viewDatabaseActivity.class.getSimpleName(), "Called onCreate");
         setContentView(R.layout.activity_view_database);
 
-        recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference();
@@ -38,24 +35,35 @@ public class viewDatabaseActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         FirebaseRecyclerOptions<ListingCard> options = new FirebaseRecyclerOptions.Builder<ListingCard>()
-                .setQuery(ref, new SnapshotParser<ListingCard>() {
-                    @NonNull
-                    @Override
-                    public ListingCard parseSnapshot(@NonNull DataSnapshot snapshot) {
-                        return new ListingCard(snapshot.child("address/streetAddress").getValue().toString(),
-                                snapshot.child("address/city").getValue().toString(),
-                                snapshot.child("address/zipCode").getValue().toString(),
-                                snapshot.child("bedBath/roomCount").getValue().toString(),
-                                snapshot.child("bedBath/bathroomCount").getValue().toString(),
-                                snapshot.child("costOfRent").getValue().toString(),
-                                snapshot.getKey());
-                    }
+                .setQuery(ref, snapshot -> {
+                    String previewUrl = getSnapshotValue(snapshot, "previewPicture");
+                    String streetAddress = getSnapshotValue(snapshot, "address/streetAddress");
+                    String city = getSnapshotValue(snapshot, "address/city");
+                    String zipCode = getSnapshotValue(snapshot, "address/zipCode");
+                    String roomCount = getSnapshotValue(snapshot, "bedBath/roomCount");
+                    String bathroomCount = getSnapshotValue(snapshot, "bedBath/bathroomCount");
+                    String costOfRent = getSnapshotValue(snapshot, "costOfRent");
+
+                    return new ListingCard(previewUrl, streetAddress, city, zipCode, roomCount,
+                            bathroomCount, costOfRent, snapshot.getKey());
                 })
                 .build();
+
         adapter = new RecyclerViewAdapter(options, this);
         recyclerView.setAdapter(adapter);
         Log.d(viewDatabaseActivity.class.getSimpleName(), "Adapter set! " + recyclerView.toString());
         ref.addValueEventListener(buildList);
+    }
+
+    @NonNull
+    private String getSnapshotValue(DataSnapshot snapshot, String key)
+    {
+        Object keyValue = snapshot.child(key).getValue();
+        if (keyValue == null) {
+            return "null";
+        } else {
+            return keyValue.toString();
+        }
     }
 
     private final ValueEventListener buildList = new ValueEventListener() {

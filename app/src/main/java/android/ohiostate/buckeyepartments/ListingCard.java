@@ -1,16 +1,17 @@
 package android.ohiostate.buckeyepartments;
 
-import java.util.List;
-
 public class ListingCard {
-    private String streetAddress, city, zip, bed, bath, rent, key;
+    private String previewImageUrl, streetAddress, city, zip, bed, bath, rent, key;
 
     // Mandatory empty constructor
     // for use of FirebaseUI
     public ListingCard() {
     }
 
-    public ListingCard(String streetAddress, String city, String zip, String bed, String bath, String rent, String key) {
+    public ListingCard(String previewImageUrl, String streetAddress, String city, String zip,
+                       String bed, String bath, String rent, String key)
+    {
+        this.previewImageUrl = previewImageUrl;
         this.streetAddress = streetAddress;
         this.city = city;
         this.zip = zip;
@@ -76,5 +77,13 @@ public class ListingCard {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getPreviewImageUrl() {
+        return previewImageUrl;
+    }
+
+    public void setPreviewImageUrl(String previewImageUrl) {
+        this.previewImageUrl = previewImageUrl;
     }
 }
