@@ -51,7 +51,8 @@ public class viewDatabaseActivity extends AppCompatActivity {
 
         adapter = new RecyclerViewAdapter(options, this);
         recyclerView.setAdapter(adapter);
-        Log.d(viewDatabaseActivity.class.getSimpleName(), "Adapter set! " + recyclerView.toString());
+        Log.d(viewDatabaseActivity.class.getSimpleName(),
+                "Adapter set! " + recyclerView.toString());
         ref.addValueEventListener(buildList);
     }
 
@@ -98,7 +99,7 @@ public class viewDatabaseActivity extends AppCompatActivity {
 
     public void createListing(View v)
     {
-        Intent intent = new Intent(this, viewListingActivity.class);
+        Intent intent = new Intent(this, createEditDeleteListingActivity.class);
         intent.putExtra("listingKey", "");
         this.startActivity(intent);
     }

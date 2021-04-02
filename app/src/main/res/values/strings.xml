@@ -19,4 +19,16 @@
     <string name="address_placeholder">1234 Something Street</string>
     <string name="bed_bath_placeholder">2 Bed, 1 Bath</string>
     <string name="rent_placeholder">100000</string>
+
+    <!-- Hint text -->
+    <string name="hint_street_address">1234 Something Street</string>
+    <string name="hint_rest_of_address">Columbus, OH 43201</string>
+    <string name="hint_bed_bath">2 Bed, 1 Bath</string>
+    <string name="hint_rent">$1234</string>
+    <string name="hint_email">something@gmail.com</string>
+    <string name="hint_url">www.fakelink.com</string>
+    <string name="hint_phone">123456789</string>
+
+    <string name="update_button">Update</string>
+    <string name="delete_button">Delete</string>
 </resources>
