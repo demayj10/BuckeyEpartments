@@ -1,5 +1,8 @@
 package android.ohiostate.buckeyepartments;
 
+
+
+import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +13,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -68,8 +73,23 @@ public class viewListingActivity extends AppCompatActivity {
         } else {
             ref = database.getReference();
         }
+
+
     }
 
+
+    private void LoadFragment(String city,String street) {
+        Fragment fragment;
+        fragment=new MapsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("city",city);
+        bundle.putString("street",street);
+        fragment.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mapFragment, fragment)
+                .commit();
+    }
     private final ValueEventListener fillValues = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -85,7 +105,7 @@ public class viewListingActivity extends AppCompatActivity {
                     String zip = getSnapshotValue(snapshot, "address/zipCode");
                     String restOfAddressString = String.format("%s, %s OH", city, zip);
                     restOfAddress.setText(restOfAddressString);
-
+                    LoadFragment(city,restOfAddressString);
                     rent.setText(String.format("$%s", getSnapshotValue(snapshot, "costOfRent")));
 
                     String bed = getSnapshotValue(snapshot,"bedBath/roomCount");
