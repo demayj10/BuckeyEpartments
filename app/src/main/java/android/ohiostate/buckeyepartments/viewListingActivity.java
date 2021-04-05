@@ -90,6 +90,7 @@ public class viewListingActivity extends AppCompatActivity {
                 .replace(R.id.mapFragment, fragment)
                 .commit();
     }
+
     private final ValueEventListener fillValues = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -100,12 +101,13 @@ public class viewListingActivity extends AppCompatActivity {
                     Log.d(TAG, previewImageUrl);
                     Picasso.get().load(previewImageUrl).into(previewImage);
 
-                    streetAddress.setText(getSnapshotValue(snapshot, "address/streetAddress"));
+                    String streetAddressString = getSnapshotValue(snapshot, "address/streetAddress");
+                    streetAddress.setText(streetAddressString);
                     String city = getSnapshotValue(snapshot, "address/city");
                     String zip = getSnapshotValue(snapshot, "address/zipCode");
                     String restOfAddressString = String.format("%s, %s OH", city, zip);
                     restOfAddress.setText(restOfAddressString);
-                    LoadFragment(city,restOfAddressString);
+                    LoadFragment(streetAddressString,restOfAddressString);
                     rent.setText(String.format("$%s", getSnapshotValue(snapshot, "costOfRent")));
 
                     String bed = getSnapshotValue(snapshot,"bedBath/roomCount");
