@@ -3,17 +3,17 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/listing_image"
-            android:contentDescription="@string/image_description"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:contentDescription="@string/image_description"
+            android:scaleType="fitXY" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,14 +22,15 @@
             android:paddingBottom="8dp"
             android:paddingLeft="6dp"
             android:paddingRight="6dp">
+
             <TextView
+                android:id="@+id/street_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/street_address"
                 android:hint="@string/hint_street_address"
-                android:textSize="22sp"
+                android:padding="0dp"
                 android:textColor="@color/black"
-                android:padding="0dp"/>
+                android:textSize="18sp" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,46 +68,58 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:orientation="vertical"
-            android:paddingTop="10dp"
-            android:paddingBottom="8dp"
             android:paddingLeft="10dp"
+            android:paddingTop="5dp"
             android:paddingRight="10dp"
-            android:layout_marginTop="20dp">
+            android:paddingBottom="5dp">
+
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/email"
-                android:hint="@string/hint_email"/>
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/hint_email" />
+
+            <TextView
                 android:id="@+id/url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:autoLink="web"
                 android:hint="@string/hint_url"
-                android:textColor="#0000EE"/>
+                android:textColor="#0000EE" />
+
             <TextView
+                android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/phone"
                 android:hint="@string/hint_phone" />
         </LinearLayout>
 
-        <Button
+        <FrameLayout
+            android:id="@+id/mapFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="@string/update_button"
-            android:background="@android:color/holo_blue_bright"
-            android:id="@+id/edit_button"
-            android:onClick="editListing"/>
+            android:layout_height="300dp"
+            android:padding="8dp">
+        </FrameLayout>
+
         <Button
+            android:id="@+id/delete_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:backgroundTint="@android:color/holo_red_light"
-            android:text="@string/delete_button"
-            android:id="@+id/delete_button"
-            android:onClick="deleteListing"/>
+            android:onClick="deleteListing"
+            android:text="@string/delete_button" />
+
+        <Button
+            android:id="@+id/edit_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@android:color/holo_blue_bright"
+            android:onClick="editListing"
+            android:text="@string/update_button" />
+
     </LinearLayout>
 </ScrollView>

@@ -8,18 +8,27 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int buttonId;
+    private int dbButtonId;
+    private int mapButtonId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        buttonId = R.id.button;
+        dbButtonId = R.id.db_button;
+        mapButtonId = R.id.map_button;
     }
 
     public void viewDatabase(View view) {
-        if(view.getId() == buttonId) {
+        if(view.getId() == dbButtonId) {
             Intent intent = new Intent(this, viewDatabaseActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    public void viewMap(View view) {
+        if(view.getId() == mapButtonId) {
+            Intent intent = new Intent(this, viewMapActivity.class);
             startActivity(intent);
         }
     }
