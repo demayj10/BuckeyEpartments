@@ -13,20 +13,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class viewListingActivity extends AppCompatActivity {
 
@@ -80,7 +73,7 @@ public class viewListingActivity extends AppCompatActivity {
 
     private void LoadFragment(String city,String street) {
         Fragment fragment;
-        fragment=new MapsFragment();
+        fragment=new ListingMapFragment();
         Bundle bundle = new Bundle();
         bundle.putString("city",city);
         bundle.putString("street",street);
