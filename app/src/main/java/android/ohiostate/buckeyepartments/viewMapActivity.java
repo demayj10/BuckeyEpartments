@@ -25,6 +25,8 @@ public class viewMapActivity extends AppCompatActivity {
 
         // init database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        //
         database.getReference().addValueEventListener(buildMap);
     }
 
