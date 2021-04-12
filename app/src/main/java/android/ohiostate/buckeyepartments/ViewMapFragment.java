@@ -55,15 +55,6 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
         fContext = context;
     }
 
-import java.util.List;
-
-public class ViewMapFragment extends Fragment {
-    String city,address;
-    FirebaseDatabase database;
-    GoogleMap map;
-    Geocoder gc;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
