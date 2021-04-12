@@ -1,13 +1,10 @@
 package android.ohiostate.buckeyepartments;
 
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +16,6 @@ import android.location.Address;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,13 +28,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,6 +55,15 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
         fContext = context;
     }
 
+import java.util.List;
+
+public class ViewMapFragment extends Fragment {
+    String city,address;
+    FirebaseDatabase database;
+    GoogleMap map;
+    Geocoder gc;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +81,7 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
         public void onMapReady(GoogleMap googleMap) {
             Log.d(ViewMapFragment.this.getClass().getSimpleName(), "Map readied!");
             map = googleMap;
+
             // we're not expecting this to update in real-time, as we don't want to have to
             // manage updating/removing/adding markers
             database.getReference().addListenerForSingleValueEvent(addMarkers);
@@ -116,7 +122,6 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
 
         }
     };
-
 
     @Nullable
     @Override
