@@ -91,6 +91,7 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
                 Log.d(ViewMapFragment.this.getClass().getSimpleName(), "No location perms!");
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 return;
             }
 
@@ -124,8 +125,6 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-
         return inflater.inflate(R.layout.fragment_view_map, container, false);
     }
 
@@ -138,13 +137,33 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
             mapFragment.getMapAsync(callback);
         }
         viewModel = new ViewModelProvider(requireActivity()).get(ViewMapViewModel.class);
+        // set what happens when a user submits a search
         viewModel.getSearchText().observe(this, item -> {
             Log.d(ViewMapFragment.this.getClass().getSimpleName(),
                     "Search Text Updated");
             Toast.makeText(getActivity(), "Search Text Updated!", Toast.LENGTH_SHORT).show();
 
-            // remove currentpos marker
             // place new marker at location
+            try {
+                List<Address> list = gc.getFromLocationName(item, 1);
+                if (list != null && list.size() > 0) {
+                    // remove currentpos marker
+                    currentPos.remove();
+                    // replace currentpos with typed location
+                    Address result = list.get(0);
+                    LatLng latLng=new LatLng( result.getLatitude(), result.getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.title("Your Location");
+                    markerOptions.position(latLng);
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    currentPos = map.addMarker(markerOptions);
+                    Log.d(ViewMapFragment.this.getClass().getSimpleName(), "Marker added!");
+                    // move camera to that location
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+                }
+            } catch (IOException e) {
+                Log.e(ViewMapFragment.this.getClass().getSimpleName(), e.toString());
+            }
             // re-search through to get proper radius
         });
     }
@@ -185,6 +204,7 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
                             update.put("latlong/lat", Double.toString(result.getLatitude()));
                             update.put("latlong/long", Double.toString(result.getLongitude()));
                             listing.getRef().updateChildren(update);
+                            // finish adding marker
                             markerOptions.position(latLng);
                             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                             Marker marker = map.addMarker(markerOptions);
