@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.location.Geocoder;
 import android.location.Address;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -48,18 +50,21 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
     private Context fContext;
     private Marker currentPos;
 
+    private ViewMapViewModel viewModel;
+
     // Initialise it from onAttach()
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         fContext = context;
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(fContext);
-
         // for now, just show all listings on the map
 
         // init database
@@ -132,6 +137,16 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+        viewModel = new ViewModelProvider(requireActivity()).get(ViewMapViewModel.class);
+        viewModel.getSearchText().observe(this, item -> {
+            Log.d(ViewMapFragment.this.getClass().getSimpleName(),
+                    "Search Text Updated");
+            Toast.makeText(getActivity(), "Search Text Updated!", Toast.LENGTH_SHORT).show();
+
+            // remove currentpos marker
+            // place new marker at location
+            // re-search through to get proper radius
+        });
     }
 
     private final ValueEventListener addMarkers = new ValueEventListener() {
@@ -166,7 +181,7 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
                             Address result = list.get(0);
                             LatLng latLng=new LatLng( result.getLatitude(), result.getLongitude());
                             // code to push the location we find to the db
-                            HashMap<String, Object> update = new HashMap<String, Object>();
+                            HashMap<String, Object> update = new HashMap<>();
                             update.put("latlong/lat", Double.toString(result.getLatitude()));
                             update.put("latlong/long", Double.toString(result.getLongitude()));
                             listing.getRef().updateChildren(update);

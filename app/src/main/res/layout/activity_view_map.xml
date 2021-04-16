@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".viewMapActivity">
 
+    <FrameLayout
+        android:id="@+id/mapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/search"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <SearchView
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -13,14 +20,5 @@
         android:id="@+id/search"
         android:layout_height="40dp"
         android:layout_width="match_parent"/>
-
-    <FrameLayout
-        android:id="@+id/mapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/search"
-        tools:layout_editor_absoluteX="96dp"
-        tools:layout_editor_absoluteY="472dp">
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
