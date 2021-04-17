@@ -28,15 +28,28 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
+        android:id="@+id/db_favourite"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:onClick="viewDatabase"
+        android:text="@string/button_favourite"
+        app:layout_constraintBottom_toTopOf="@+id/map_button"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/db_button"
+        app:layout_constraintVertical_bias="0.32" />
+
+    <Button
         android:id="@+id/map_button"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="84dp"
         android:onClick="viewMap"
         android:text="@string/view_map"
-        app:layout_constraintTop_toBottomOf="@id/db_button"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/db_button" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
