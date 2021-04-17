@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.location.Geocoder;
 import android.location.Address;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,8 +40,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener {
     private FusedLocationProviderClient fusedLocationClient;
@@ -74,7 +71,7 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
         listings = new ArrayList<>();
     }
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    final private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             Log.d(ViewMapFragment.this.getClass().getSimpleName(), "Map readied!");
@@ -99,7 +96,7 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
 
             googleMap.setMyLocationEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            googleMap.setOnInfoWindowClickListener(ViewMapFragment.this::onInfoWindowClick);
+            googleMap.setOnInfoWindowClickListener(ViewMapFragment.this);
 
             // get current location
             fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
@@ -178,7 +175,7 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
         viewModel.getRadius().observe(this, item -> {
             Log.d(ViewMapFragment.this.getClass().getSimpleName(), "New Radius: " + item);
             // set new radius
-            radius = item.intValue();
+            radius = item;
             // add new markers, checking to make sure within distance
             database.getReference().addListenerForSingleValueEvent(addMarkers);
             Log.d(ViewMapFragment.this.getClass().getSimpleName(), "New Listener Added..?");
