@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,17 +51,16 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
     private Geocoder gc;
     private Context fContext;
     private Marker currentPos;
+    private ArrayList<Marker> listings;
 
     private ViewMapViewModel viewModel;
-
+    private int radius = -1;
     // Initialise it from onAttach()
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         fContext = context;
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,7 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
         // init database
         database = FirebaseDatabase.getInstance();
         gc = new Geocoder(getContext());
+        listings = new ArrayList<>();
     }
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -141,7 +143,6 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
         viewModel.getSearchText().observe(this, item -> {
             Log.d(ViewMapFragment.this.getClass().getSimpleName(),
                     "Search Text Updated");
-            Toast.makeText(getActivity(), "Search Text Updated!", Toast.LENGTH_SHORT).show();
 
             // place new marker at location
             try {
@@ -164,13 +165,35 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
             } catch (IOException e) {
                 Log.e(ViewMapFragment.this.getClass().getSimpleName(), e.toString());
             }
+            // clear all listing markers already placed
+            for (Marker listing : listings) {
+                listing.remove();
+            }
+            listings.clear();
             // re-search through to get proper radius
+            database.getReference().addListenerForSingleValueEvent(addMarkers);
+        });
+
+        // set what happens when user sets a new radius
+        viewModel.getRadius().observe(this, item -> {
+            Log.d(ViewMapFragment.this.getClass().getSimpleName(), "New Radius: " + item);
+            // set new radius
+            radius = item.intValue();
+            // add new markers, checking to make sure within distance
+            database.getReference().addListenerForSingleValueEvent(addMarkers);
+            Log.d(ViewMapFragment.this.getClass().getSimpleName(), "New Listener Added..?");
         });
     }
 
     private final ValueEventListener addMarkers = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
+            // clear all listing markers already placed
+            for (Marker listing : listings) {
+                listing.remove();
+            }
+            listings.clear();
+            // add markers back
             Log.d(ViewMapFragment.this.getClass().getSimpleName(), "Snapshot obtained!");
             for (DataSnapshot listing : snapshot.getChildren()) {
                 MarkerOptions markerOptions = new MarkerOptions();
@@ -187,11 +210,14 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
                 if (!getSnapshotValue(listing, "latlong/lat").equals("null")) {
                     LatLng latLng = new LatLng( Double.parseDouble(getSnapshotValue(listing,"latlong/lat")),
                             Double.parseDouble(getSnapshotValue(listing, "latlong/long")));
-                    markerOptions.position(latLng);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                    Marker marker = map.addMarker(markerOptions);
-                    marker.setTag(listing.getKey());
-                    Log.d(ViewMapFragment.this.getClass().getSimpleName(), "Marker added!");
+                    if (withinRange(currentPos, latLng)) {
+                        markerOptions.position(latLng);
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                        Marker marker = map.addMarker(markerOptions);
+                        marker.setTag(listing.getKey());
+                        listings.add(marker);
+                        Log.d(ViewMapFragment.this.getClass().getSimpleName(), "Marker added!");
+                    }
                 } else {
                     // no latitude or longitude held for this listing, use geocoder
                     try {
@@ -205,11 +231,14 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
                             update.put("latlong/long", Double.toString(result.getLongitude()));
                             listing.getRef().updateChildren(update);
                             // finish adding marker
-                            markerOptions.position(latLng);
-                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                            Marker marker = map.addMarker(markerOptions);
-                            marker.setTag(listing.getKey());
-                            Log.d(ViewMapFragment.this.getClass().getSimpleName(), "Marker added!");
+                            if (withinRange(currentPos, latLng)) {
+                                markerOptions.position(latLng);
+                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                Marker marker = map.addMarker(markerOptions);
+                                marker.setTag(listing.getKey());
+                                listings.add(marker);
+                                Log.d(ViewMapFragment.this.getClass().getSimpleName(), "Marker added!");
+                            }
                         }
                     } catch (IOException e) {
                         Log.e(ViewMapFragment.this.getClass().getSimpleName(), e.toString());
@@ -238,8 +267,24 @@ public class ViewMapFragment extends Fragment implements GoogleMap.OnInfoWindowC
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Intent intent = new Intent(fContext, viewListingActivity.class);
-        intent.putExtra("listingKey", marker.getTag().toString());
-        fContext.startActivity(intent);
+        if (!marker.getTitle().equals("Your Location")) {
+            Intent intent = new Intent(fContext, viewListingActivity.class);
+            intent.putExtra("listingKey", marker.getTag().toString());
+            fContext.startActivity(intent);
+        }
+    }
+
+    private boolean withinRange(Marker m, LatLng l) {
+        if (radius == -1) {
+            return true;
+        }
+        Location a = new Location("");
+        LatLng ax = m.getPosition();
+        a.setLatitude(ax.latitude);
+        a.setLongitude(ax.longitude);
+        Location b = new Location("");
+        b.setLatitude(l.latitude);
+        b.setLongitude(l.longitude);
+        return a.distanceTo(b) < radius;
     }
 }
