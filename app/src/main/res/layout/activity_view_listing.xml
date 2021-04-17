@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
     <LinearLayout
@@ -14,6 +15,24 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/image_description"
             android:scaleType="fitXY" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="50dp"
+            android:paddingEnd="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="5dp">
+
+            <ImageView
+                android:id="@+id/imageViewFavorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:srcCompat="@drawable/ic_un_favorite" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -100,8 +119,7 @@
             android:id="@+id/mapFragment"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:padding="8dp">
-        </FrameLayout>
+            android:padding="8dp"></FrameLayout>
 
         <Button
             android:id="@+id/delete_button"

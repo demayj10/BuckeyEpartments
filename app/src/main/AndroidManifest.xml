@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BuckeyEpartments">
-        <activity android:name=".viewMapActivity"></activity>
+        <activity android:name=".AllFavouriteApartmentsActivity"></activity>
+        <activity android:name=".viewMapActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

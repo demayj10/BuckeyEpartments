@@ -4,6 +4,7 @@ package android.ohiostate.buckeyepartments;
 
 import androidx.fragment.app.Fragment;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +35,11 @@ public class viewListingActivity extends AppCompatActivity {
     private TextView phone;
     private final String TAG = "viewListingActivity";
     private String key;
-
+    // added new
+    ImageView imageViewFavorite;
+    Database localDatabase=new Database(this);
+    String imageURL;
+    String streetAddressString,city,zip,restOfAddressString,costOfRent,bed,bath,emailString,urlString,phoneString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +48,7 @@ public class viewListingActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         key = (String) extras.get("listingKey");
+        imageViewFavorite=findViewById(R.id.imageViewFavorite);
 
         previewImage = findViewById(R.id.listing_image);
 
@@ -67,7 +73,28 @@ public class viewListingActivity extends AppCompatActivity {
             ref = database.getReference();
         }
 
+        // new added lines
+        Cursor cursor=localDatabase.getSingleApartment(key);
+        if(cursor.moveToFirst()){
+            imageViewFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite));
+        }else {
+            imageViewFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_un_favorite));
+        }
 
+        imageViewFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Cursor cursor1=localDatabase.getSingleApartment(key);
+                if(cursor1.moveToFirst()){
+                    imageViewFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_un_favorite));
+                    localDatabase.deleteApartment(cursor1.getInt(0));
+                }else {
+                    imageViewFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite));
+                    localDatabase.InsertApartment(key,streetAddressString,costOfRent,bed,bath,imageURL,city,zip);
+                }
+
+            }
+        });
     }
 
 
@@ -87,29 +114,38 @@ public class viewListingActivity extends AppCompatActivity {
     private final ValueEventListener fillValues = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
+
             Log.d(TAG, "In onDataChange");
             try {
                 if (snapshot.getValue() != null) {
                     String previewImageUrl = getSnapshotValue(snapshot, "previewPicture");
+                    // globalize image url
+                    imageURL=previewImageUrl;
                     Log.d(TAG, previewImageUrl);
                     Picasso.get().load(previewImageUrl).into(previewImage);
-
-                    String streetAddressString = getSnapshotValue(snapshot, "address/streetAddress");
+                    streetAddressString = getSnapshotValue(snapshot, "address/streetAddress");
                     streetAddress.setText(streetAddressString);
-                    String city = getSnapshotValue(snapshot, "address/city");
-                    String zip = getSnapshotValue(snapshot, "address/zipCode");
-                    String restOfAddressString = String.format("%s, %s OH", city, zip);
+                    city = getSnapshotValue(snapshot, "address/city");
+                    zip = getSnapshotValue(snapshot, "address/zipCode");
+                    restOfAddressString = String.format("%s, %s OH", city, zip);
                     restOfAddress.setText(restOfAddressString);
                     LoadFragment(streetAddressString,restOfAddressString);
+                    costOfRent= getSnapshotValue(snapshot, "costOfRent");
                     rent.setText(String.format("$%s", getSnapshotValue(snapshot, "costOfRent")));
 
-                    String bed = getSnapshotValue(snapshot,"bedBath/roomCount");
-                    String bath = getSnapshotValue(snapshot, "bedBath/bathroomCount");
+                    bed = getSnapshotValue(snapshot,"bedBath/roomCount");
+                    bath = getSnapshotValue(snapshot, "bedBath/bathroomCount");
                     bedBath.setText(String.format("%s Bed, %s Bath", bed, bath));
+                    emailString=getSnapshotValue(snapshot, "contactInfo/email");
+                    email.setText(emailString);
+                    urlString=getSnapshotValue(snapshot, "contactInfo/listingUrl");
+                    url.setText(urlString);
+                    phoneString=getSnapshotValue(snapshot, "contactInfo/phoneNumber");
+                    phone.setText(phoneString);
 
-                    email.setText(getSnapshotValue(snapshot, "contactInfo/email"));
-                    url.setText(getSnapshotValue(snapshot, "contactInfo/listingUrl"));
-                    phone.setText(getSnapshotValue(snapshot, "contactInfo/phoneNumber"));
+
+
+
                 }
             } catch (NullPointerException e) {
                 System.out.println(e);
