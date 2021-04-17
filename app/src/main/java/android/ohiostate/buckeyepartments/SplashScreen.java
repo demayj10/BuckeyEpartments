@@ -15,9 +15,9 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void run() {
                 //try {
-                // sleep(6000); // 5 seconds delay (wtf????)
-                startActivity(new Intent(SplashScreen.this,MainActivity.class));
-                finish();
+                    // sleep(6000); // 5 seconds delay (wtf????)
+                    startActivity(new Intent(SplashScreen.this,MainActivity.class));
+                    finish();
                 //} catch (InterruptedException e) {
                 //    e.printStackTrace();
                 //}
